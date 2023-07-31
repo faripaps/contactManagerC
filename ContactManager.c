@@ -43,7 +43,7 @@ void CloseCM(){
     printf("1. Return to Menu\n");
     printf("2. Close Program \n");
     int op;
-    scanf("%d",&op)
+    scanf("%d",&op);
     switch(op)
     {
         case 1:
