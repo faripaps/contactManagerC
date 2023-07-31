@@ -25,20 +25,23 @@ void CreateCM(){
     fp = fopen("contact.txt", "w");
     fprintf(fp,"Name: John \n");
     fprintf(fp, "Surname: Doe \n");
+    fprintf(fp, "Number: 0774141450 \n");
     fclose(fp);
 }
 // Edit Menu
 void EditCM(){
-
+    printf("Please make your choice: ");
 }
 // Search Menu
 void SearchCM(){
-
+ printf("Search By Number: \n");
+ printf("Search By Name: \n");
 }
 //Delete Menu
 void DeleteCM()
 {
-
+    printf("Please make your choice: \n");
+    printf("1. Search Value to delete: \n");
 }
 //Close Menu
 void CloseCM(){
