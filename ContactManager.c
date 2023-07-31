@@ -22,6 +22,10 @@ void menu()
 // Create Menu
 void CreateCM(){
     FILE *fp; 
+    fp = fopen("contact.txt", "w");
+    fprintf(fp,"Name: John \n");
+    fprintf(fp, "Surname: Doe \n");
+    fclose(fp);
 }
 // Edit Menu
 void EditCM(){
@@ -43,8 +47,8 @@ void CloseCM(){
     printf("1. Return to Menu\n");
     printf("2. Close Program \n");
     int op;
-    scanf("%d",&op);
-    switch(op)
+    scanf("%d",&op)
+    switch(op);
     {
         case 1:
         menu();
