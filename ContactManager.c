@@ -1,4 +1,4 @@
-/* 
+/*
     Contact Manager
     Programmer: George Papaya
     Date: 31 July 2023
@@ -18,24 +18,55 @@ void menu()
     printf("4. Delete \n");
     printf("5. Close \n");
     printf("\n \n");
+    int mn;
+    scanf("%d",&mn);
+    switch(mn){
+case 1:
+    CreateCM();
+    break;
+case 2:
+    EditCM();
+        break;
+case 3:
+    SearchCM();
+        break;
+case 4:
+    DeleteCM();
+    break;
+case 5:
+    CloseCM();
+default:
+    printf("Invalid Option Selected! \n");
+    menu();
+    }
 }
 // Create Menu
 void CreateCM(){
-    FILE *fp; 
-    fp = fopen("contact.txt", "w");
+    FILE *fp;
+    fp = fopen("contact.txt", "w+");
     fprintf(fp,"Name: John \n");
-    fprintf(fp, "Surname: Doe \n");
-    fprintf(fp, "Number: 0774141450 \n");
+    fprintf(fp,"Surname: Doe \n");
+    fprintf(fp,"Number: 0774141450 \n");
     fclose(fp);
 }
 // Edit Menu
 void EditCM(){
     printf("Please make your choice: ");
+    printf("1. Edit");
+    int ch,count;
+    FILE *fp;
+    fp = fopen("contact.txt", "w");
+       while ((ch = getc(fp)) != EOF)
+    {
+        putc(ch,stdout);
+        count++;
+    }
+    fclose(fp);
 }
 // Search Menu
 void SearchCM(){
- printf("Search By Number: \n");
- printf("Search By Name: \n");
+ printf("Search By Number:[Sn] \n");
+ printf("Search By Name: [Ns]\n");
 }
 //Delete Menu
 void DeleteCM()
