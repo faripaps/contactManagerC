@@ -7,95 +7,142 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-// Main Menu
-void menu()
-{
-    printf("Welcome to Contact Manager!!!");
-    printf("\n \n");
-    printf("1. Create \n");
-    printf("2. Edit \n");
-    printf("3. Search \n");
-    printf("4. Delete \n");
-    printf("5. Close \n");
-    printf("\n \n");
-    int mn;
-    scanf("%d",&mn);
-    switch(mn){
-case 1:
-    CreateCM();
-    break;
-case 2:
-    EditCM();
-        break;
-case 3:
-    SearchCM();
-        break;
-case 4:
-    DeleteCM();
-    break;
-case 5:
-    CloseCM();
-default:
-    printf("Invalid Option Selected! \n");
-    menu();
-    }
-}
-// Create Menu
-void CreateCM(){
-    FILE *fp;
-    fp = fopen("contact.txt", "w+");
-    fprintf(fp,"Name: John \n");
-    fprintf(fp,"Surname: Doe \n");
-    fprintf(fp,"Number: 0774141450 \n");
-    fclose(fp);
-}
-// Edit Menu
-void EditCM(){
-    printf("Please make your choice: ");
-    printf("1. Edit");
-    int ch,count;
-    FILE *fp;
-    fp = fopen("contact.txt", "w");
-       while ((ch = getc(fp)) != EOF)
-    {
-        putc(ch,stdout);
-        count++;
-    }
-    fclose(fp);
-}
-// Search Menu
-void SearchCM(){
- printf("Search By Number:[Sn] \n");
- printf("Search By Name: [Ns]\n");
-}
-//Delete Menu
-void DeleteCM()
-{
-    printf("Please make your choice: \n");
-    printf("1. Search Value to delete: \n");
-}
-//Close Menu
-void CloseCM(){
-    printf("Close Menu:\n");
-    printf("Choose from the list below\n");
-    printf("1. Return to Menu\n");
-    printf("2. Close Program \n");
-    int op;
-    scanf("%d",&op);
-    switch(op)
-    {
-        case 1:
-        menu();
-        case 2:
-        exit(1);
-        default:
-        printf("Incorrect Value Selected!\n");
-        CloseCM();
-    }
+#include <string.h>
 
+// Structure to hold contact details
+struct Contact {
+    char name[50];
+    char surname[50];
+    char phoneNumber[15];
+};
+
+// Function to create a new contact
+struct Contact createContact() {
+    struct Contact c;
+    printf("Enter name: ");
+    fgets(c.name, sizeof(c.name), stdin);
+    c.name[strcspn(c.name, "\n")] = '\0'; // Remove trailing newline
+    
+    printf("Enter surname: ");
+    fgets(c.surname, sizeof(c.surname), stdin);
+    c.surname[strcspn(c.surname, "\n")] = '\0'; // Remove trailing newline
+    
+    printf("Enter phone number: ");
+    fgets(c.phoneNumber, sizeof(c.phoneNumber), stdin);
+    c.phoneNumber[strcspn(c.phoneNumber, "\n")] = '\0'; // Remove trailing newline
+    
+    return c;
 }
-int main()
-{
-    menu();
+
+// Function to save a contact to a file
+void saveContact(struct Contact c) {
+    FILE *file = fopen("contacts.txt", "a");
+    if (file == NULL) {
+        printf("Error opening file.\n");
+        return;
+    }
+    fprintf(file, "%s,%s,%s\n", c.name, c.surname, c.phoneNumber);
+    fclose(file);
+    printf("Contact saved successfully!\n");
+}
+
+// Function to edit a specific contact
+void editContact() {
+    char searchName[50];
+    printf("Enter the name of the contact you want to edit: ");
+    fgets(searchName, sizeof(searchName), stdin);
+    searchName[strcspn(searchName, "\n")] = '\0'; // Remove trailing newline
+    
+    struct Contact c;
+    FILE *file = fopen("contacts.txt", "r");
+    FILE *tempFile = fopen("temp.txt", "w");
+    int found = 0;
+    
+    while (fscanf(file, "%[^,],%[^,],%s\n", c.name, c.surname, c.phoneNumber) != EOF) {
+        if (strcmp(c.name, searchName) == 0) {
+            found = 1;
+            printf("Enter new details for the contact:\n");
+            c = createContact();
+        }
+        fprintf(tempFile, "%s,%s,%s\n", c.name, c.surname, c.phoneNumber);
+    }
+    
+    fclose(file);
+    fclose(tempFile);
+    
+    remove("contacts.txt");
+    rename("temp.txt", "contacts.txt");
+    
+    if (found) {
+        printf("Contact edited successfully!\n");
+    } else {
+        printf("Contact not found!\n");
+    }
+}
+
+// Function to search for a contact based on name
+void searchContact() {
+    char searchName[50];
+    printf("Enter the name of the contact you want to search for: ");
+    fgets(searchName, sizeof(searchName), stdin);
+    searchName[strcspn(searchName, "\n")] = '\0'; // Remove trailing newline
+    
+    struct Contact c;
+    FILE *file = fopen("contacts.txt", "r");
+    int found = 0;
+    
+    while (fscanf(file, "%[^,],%[^,],%s\n", c.name, c.surname, c.phoneNumber) != EOF) {
+        if (strcmp(c.name, searchName) == 0) {
+            found = 1;
+            printf("Contact details:\n");
+            printf("Name: %s %s\n", c.name, c.surname);
+            printf("Phone Number: %s\n", c.phoneNumber);
+            break;
+        }
+    }
+    
+    fclose(file);
+    
+    if (!found) {
+        printf("Contact not found!\n");
+    }
+}
+
+int main() {
+    int choice;
+    
+    // Menu loop
+    do {
+        printf("\n--- Contact Management System ---\n");
+        printf("1. Create a contact\n");
+        printf("2. Edit a contact\n");
+        printf("3. Search for a contact\n");
+        printf("4. Exit\n");
+        printf("Enter your choice (1-4): ");
+        scanf("%d", &choice);
+        getchar(); // Capture newline character
+        
+        switch (choice) {
+            case 1:
+                printf("\n--- Create a New Contact ---\n");
+                struct Contact newContact = createContact();
+                saveContact(newContact);
+                break;
+            case 2:
+                printf("\n--- Edit a Contact ---\n");
+                editContact();
+                break;
+            case 3:
+                printf("\n--- Search for a Contact ---\n");
+                searchContact();
+                break;
+            case 4:
+                printf("\nExiting the program.\n");
+                break;
+            default:
+                printf("Invalid choice! Please select a valid option (1-4).\n");
+        }
+    } while (choice != 4);
+    
     return 0;
 }
